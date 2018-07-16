@@ -13,7 +13,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { NgxMdModule } from 'ngx-md';
+import { NgxMdModule } from '../../../projects/ngx-md/src/lib/ngx-md.module';
 import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home';
 import { TablesComponent } from './tables/tables.component';

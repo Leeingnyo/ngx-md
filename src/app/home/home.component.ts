@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { NgxMdService } from 'ngx-md';
+import { NgxMdService } from '../../../../projects/ngx-md/src/lib/ngx-md.service';
 
 import 'prismjs/prism';
 import 'prismjs/components/prism-c';

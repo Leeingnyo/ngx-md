@@ -2,14 +2,14 @@ import { Injectable, SecurityContext } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Renderer, setOptions, parse } from 'marked';
+// import { Renderer, setOptions, parse } from 'marked';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NgxMdService {
-  private _renderer: any = new Renderer();
+  // private _renderer: any = new Renderer();
   constructor(
     private _http: HttpClient,
     private _domSanitizer: DomSanitizer
@@ -27,8 +27,9 @@ export class NgxMdService {
     );
   }
 
-  public get renderer(): Renderer {
-    return this._renderer;
+  public get renderer() {
+    // return this._renderer;
+    return <any>{};
   }
 
   // handle data
@@ -46,16 +47,18 @@ export class NgxMdService {
       smartLists: true,
       smartypants: false
     }, options);
-    options.renderer = this._renderer;
-    setOptions(options);
+    // options.renderer = this._renderer;
+    // setOptions(options);
   }
 
   // comple markdown to html
   public compile(data: string, sanitize = true) {
+    /*
     return this._domSanitizer.sanitize(
       sanitize ? SecurityContext.HTML : SecurityContext.NONE,
       parse(data).trim()
     );
+    */
   }
 
   // handle error
@@ -73,16 +76,6 @@ export class NgxMdService {
 
   // extend marked render to support todo checkbox
   private extendRenderer() {
-    this._renderer.listitem = function(text: string) {
-      if (/^\s*\[[x ]\]\s*/.test(text)) {
-        text = text
-        .replace(/^\s*\[ \]\s*/, '<input type="checkbox" class="md-checkbox" disabled> ')
-        .replace(/^\s*\[x\]\s*/, '<input type="checkbox" class="md-checkbox" checked disabled> ');
-        return '<li style="list-style: none">' + text + '</li>';
-      } else {
-        return '<li>' + text + '</li>';
-      }
-    };
   }
 }
 
