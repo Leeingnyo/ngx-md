@@ -17,11 +17,11 @@ export class NgxMdService {
     private _domSanitizer: DomSanitizer
   ) {
     // Remember old renderer, if overriden, or proxy to default renderer
-    var defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+    const defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
       return self.renderToken(tokens, idx, options);
     };
     this._renderer.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-      var aIndex = tokens[idx].attrIndex('target');
+      const aIndex = tokens[idx].attrIndex('target');
 
       if (aIndex < 0) {
         tokens[idx].attrPush(['target', '_blank']);
@@ -38,7 +38,7 @@ export class NgxMdService {
   getContent(path: string): Observable<any> {
     return this._http.get(path, {responseType: 'text'})
     .pipe(
-      map(res => this.extractData(res)),
+      map(res => res),
       catchError(this.handleError)
     );
   }
