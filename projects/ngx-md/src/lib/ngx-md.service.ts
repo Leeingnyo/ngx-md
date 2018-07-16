@@ -2,19 +2,35 @@ import { Injectable, SecurityContext } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-// import { Renderer, setOptions, parse } from 'marked';
 import { DomSanitizer } from '@angular/platform-browser';
+import MarkdownIt from 'markdown-it';
+import MarkdownItFootnote from 'markdown-it-footnote';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NgxMdService {
-  // private _renderer: any = new Renderer();
+  private _renderer: any = MarkdownIt({ linkify: true }).use(MarkdownItFootnote);
+
   constructor(
     private _http: HttpClient,
     private _domSanitizer: DomSanitizer
   ) {
-    this.extendRenderer();
+    // Remember old renderer, if overriden, or proxy to default renderer
+    var defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+      return self.renderToken(tokens, idx, options);
+    };
+    this._renderer.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+      var aIndex = tokens[idx].attrIndex('target');
+
+      if (aIndex < 0) {
+        tokens[idx].attrPush(['target', '_blank']);
+      } else {
+        tokens[idx].attrs[aIndex][1] = '_blank';
+      }
+
+      return defaultRender(tokens, idx, options, env, self);
+    };
     this.setMarkedOptions({});
   }
 
@@ -27,16 +43,6 @@ export class NgxMdService {
     );
   }
 
-  public get renderer() {
-    // return this._renderer;
-    return <any>{};
-  }
-
-  // handle data
-  public extractData(res: any): string {
-    return res || '';
-  }
-
   public setMarkedOptions(options: any) {
     options = Object.assign({
       gfm: true,
@@ -47,18 +53,12 @@ export class NgxMdService {
       smartLists: true,
       smartypants: false
     }, options);
-    // options.renderer = this._renderer;
-    // setOptions(options);
+    // TODO
   }
 
   // comple markdown to html
-  public compile(data: string, sanitize = true) {
-    /*
-    return this._domSanitizer.sanitize(
-      sanitize ? SecurityContext.HTML : SecurityContext.NONE,
-      parse(data).trim()
-    );
-    */
+  public compile(data: string) {
+     return this._renderer.render(data);
   }
 
   // handle error
@@ -72,10 +72,6 @@ export class NgxMdService {
       errMsg = error.message ? error.message : error.toString();
     }
     return throwError(errMsg);
-  }
-
-  // extend marked render to support todo checkbox
-  private extendRenderer() {
   }
 }
 

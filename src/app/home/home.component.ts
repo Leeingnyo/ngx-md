@@ -192,41 +192,21 @@ Markdown | Less | Pretty
 
 `;
 
-	constructor(private _markdown: NgxMdService) {}
+  constructor(private _markdown: NgxMdService) {
+  }
 
-	ngOnInit() {
-		// extras.init();
-		this._markdown.setMarkedOptions({});
-		// console.log(extras.markedDefaults);
-		this._markdown.setMarkedOptions(
-			Object.assign(
-				{},
-				{
-					gfm: true,
-					tables: true,
-					breaks: false,
-					pedantic: false,
-					sanitize: false,
-					smartLists: true,
-					smartypants: false,
-				},
-			),
-		);
-		this._markdown.renderer.table = (header: string, body: string) => {
-			return `
-      <table class="table2">
-        <thead>
-          ${header}
-        </thead>
-        <tbody>
-          ${body}
-        </tbody>
-      </table>
-      `;
-		};
-
-		this._markdown.renderer.blockquote = (quote: string) => {
-			return `<blockquote class="king-quote">${quote}</blockquote>`;
-		};
-	}
+  ngOnInit() {
+    // extras.init();
+    this._markdown.setMarkedOptions({});
+    // console.log(extras.markedDefaults);
+    this._markdown.setMarkedOptions(Object.assign( {} , {
+      gfm: true,
+      tables: true,
+      breaks: false,
+      pedantic: false,
+      sanitize: false,
+      smartLists: true,
+      smartypants: false
+    }));
+  }
 }
