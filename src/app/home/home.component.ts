@@ -190,6 +190,13 @@ Markdown | Less | Pretty
 *Still* | \`renders]\` | **nicely**
 1 | 2 | 3
 
+# Footnote
+
+footnote by markdown-it-footnote [^1]
+
+[^1]: https://github.com/markdown-it/markdown-it-footnote
+
+
 `;
 
   constructor(private _markdown: NgxMdService) {
