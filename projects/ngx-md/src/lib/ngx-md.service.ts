@@ -16,21 +16,7 @@ export class NgxMdService {
     private _http: HttpClient,
     private _domSanitizer: DomSanitizer
   ) {
-    // Remember old renderer, if overriden, or proxy to default renderer
-    const defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
-      return self.renderToken(tokens, idx, options);
-    };
-    this._renderer.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-      const aIndex = tokens[idx].attrIndex('target');
-
-      if (aIndex < 0) {
-        tokens[idx].attrPush(['target', '_blank']);
-      } else {
-        tokens[idx].attrs[aIndex][1] = '_blank';
-      }
-
-      return defaultRender(tokens, idx, options, env, self);
-    };
+    this.extendRenderer();
     this.setMarkedOptions({});
   }
 
@@ -59,6 +45,50 @@ export class NgxMdService {
   // comple markdown to html
   public compile(data: string) {
      return this._renderer.render(data);
+  }
+
+  // extend marked render to support todo checkbox
+  private extendRenderer() {
+    // make target of anchor tag blank
+    // Remember old renderer, if overriden, or proxy to default renderer
+    const defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+      return self.renderToken(tokens, idx, options);
+    };
+    this._renderer.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+      const aIndex = tokens[idx].attrIndex('target');
+
+      if (aIndex < 0) {
+        tokens[idx].attrPush(['target', '_blank']);
+      } else {
+        tokens[idx].attrs[aIndex][1] = '_blank';
+      }
+
+      return defaultRender(tokens, idx, options, env, self);
+    };
+
+    // for angular routeer, add prefix location.href without fragment
+    const currentPageLinkWithoutHash = location.origin + location.pathname + location.search;
+    this._renderer.renderer.rules.footnote_ref = function render_footnote_ref(tokens, idx, options, env, slf) {
+      var id      = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+      var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
+      var refid   = id;
+
+      if (tokens[idx].meta.subId > 0) {
+        refid += ':' + tokens[idx].meta.subId;
+      }
+
+      return '<sup class="footnote-ref"><a href="' + currentPageLinkWithoutHash + '#fn' + id + '" id="fnref' + refid + '">' + caption + '</a></sup>';
+    }
+    this._renderer.renderer.rules.footnote_anchor = function render_footnote_anchor(tokens, idx, options, env, slf) {
+      var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+
+      if (tokens[idx].meta.subId > 0) {
+        id += ':' + tokens[idx].meta.subId;
+      }
+
+      /* ↩ with escape code to prevent display as Apple Emoji on iOS */
+      return ' <a href="' + currentPageLinkWithoutHash + '#fnref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
+    }
   }
 
   // handle error
