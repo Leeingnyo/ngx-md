@@ -10,7 +10,7 @@ import MarkdownItFootnote from 'markdown-it-footnote';
   providedIn: 'root'
 })
 export class NgxMdService {
-  private _renderer: any = MarkdownIt({ linkify: true }).use(MarkdownItFootnote);
+  private _renderer: any = MarkdownIt({ linkify: true, html: true }).use(MarkdownItFootnote);
 
   constructor(
     private _http: HttpClient,
