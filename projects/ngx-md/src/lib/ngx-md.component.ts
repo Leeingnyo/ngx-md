@@ -59,7 +59,7 @@ export class NgxMdComponent implements  AfterViewInit {
     // on input
     onDataChange(data: string) {
       if (data) {
-        this._el.nativeElement.innerHTML = this._mdService.compile(data, this.sanitizeHtml);
+        this._el.nativeElement.innerHTML = this._mdService.compile(data);
       } else {
         this._el.nativeElement.innerHTML = '';
       }
@@ -79,7 +79,7 @@ export class NgxMdComponent implements  AfterViewInit {
 
     processRaw() {
       this._md = this.prepare(decodeHtml(this._el.nativeElement.innerHTML));
-      this._el.nativeElement.innerHTML = this._mdService.compile(this._md, this.sanitizeHtml);
+      this._el.nativeElement.innerHTML = this._mdService.compile(this._md);
       this.highlightContent(false);
     }
 
@@ -92,7 +92,7 @@ export class NgxMdComponent implements  AfterViewInit {
             .subscribe(data => {
                 this.loaded.emit(data);
                 this._md = this._ext !== 'md' ? '```' + this._ext + '\n' + data + '\n```' : data;
-                this._el.nativeElement.innerHTML = this._mdService.compile(this.prepare(this._md), this.sanitizeHtml);
+                this._el.nativeElement.innerHTML = this._mdService.compile(this.prepare(this._md));
                 this.highlightContent(false);
             });
     }
