@@ -47,6 +47,12 @@ export class NgxMdService {
      return this._renderer.render(data);
   }
 
+  // add plugin
+  public loadPlugin(plugin, ...opts) {
+    this._renderer = this._renderer.use(plugin, ...opts);
+    return this;
+  }
+
   // extend marked render to support todo checkbox
   private extendRenderer() {
     // make target of anchor tag blank
