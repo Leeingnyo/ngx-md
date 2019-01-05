@@ -57,25 +57,8 @@ export class NgxMdService {
     return this;
   }
 
-  // extend marked render to support todo checkbox
+  // extend marked render to support footnote
   private extendRenderer() {
-    // make target of anchor tag blank
-    // Remember old renderer, if overriden, or proxy to default renderer
-    const defaultRender = this._renderer.renderer.rules.link_open || function(tokens, idx, options, env, self) {
-      return self.renderToken(tokens, idx, options);
-    };
-    this._renderer.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-      const aIndex = tokens[idx].attrIndex('target');
-
-      if (aIndex < 0) {
-        tokens[idx].attrPush(['target', '_blank']);
-      } else {
-        tokens[idx].attrs[aIndex][1] = '_blank';
-      }
-
-      return defaultRender(tokens, idx, options, env, self);
-    };
-
     // for angular routeer, add prefix location.href without fragment
     const currentPageLinkWithoutHash = location.origin + location.pathname + location.search;
     this._renderer.renderer.rules.footnote_ref = function render_footnote_ref(tokens, idx, options, env, slf) {
