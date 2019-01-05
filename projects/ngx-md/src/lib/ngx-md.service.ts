@@ -29,6 +29,10 @@ export class NgxMdService {
     );
   }
 
+  public get renderer(): any {
+    return this._renderer;
+  }
+
   public setMarkedOptions(options: any) {
     options = Object.assign({
       gfm: true,
